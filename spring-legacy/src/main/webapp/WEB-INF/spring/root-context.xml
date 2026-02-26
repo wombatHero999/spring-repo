@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 
+		Root Context
+		 - 서버구동과 동시에 web.xml파일을 거쳐서 로딩되는 문서
+		 - 서버구동과 동시에 세팅해야하는 내용들을 작성하며, 이 내용들은 어플리케이션 전역에서
+		 사용된다.
+	 -->
+	
+	<context:property-placeholder location="classpath:driver.properties" />
+		
+	<!-- DB연결설정 -->
+	<!-- 1단계 ) DB연결을 위한 도구 설정 
+		BasicDataSource datasource = new BasicDataSource();
+		datasource.setDriverClassName("...");
+	-->
+	<bean class="org.apache.commons.dbcp.BasicDataSource" id="datasource" destroy-method="close">
+		<property name="driverClassName" value="${datasource.driverClassName}" />
+		<property name="url" value="${datasource.url}" />
+		<property name="username" value="${datasource.username}" />
+		<property name="password" value="${datasource.password}"></property>
+	</bean>
+	
+	<!-- 2단계) Mybatis Spring에서 제공하는 sql명령 실행 도구 등록 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory" >
+		<!-- mybatis 설정파일 위치 지정 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml" ></property>
+		
+		<!-- DB연결을 위한 도구 -->
+		<property name="dataSource" ref="datasource" />
+		
+		<!-- 매퍼파일의 위치 등록 -->
+		<property name="mapperLocations" value="classpath*:mapper/**/*.xml" />
+	</bean>
+	
+	<!-- 3단계) sql구문을 실행하기 위한 템플릿을 제공하는 bean객체 등록 -->
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" >
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- 
+		transactionManger
+		 - 데이터베이스 트랜잭션을 처리하는 bean객체
+		 - JDBC를 통해 커넥션을 얻어온 후, 트래잭션을 시작/커밋/롤백하는것을
+		 담당.
+		 - @Transactional어노테이션을 통해 트랜잭션을 선언적으로 처리
+	 -->
+	 <bean id="transactionManager" 
+	 class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	 	<property name="dataSource" ref="datasource"></property>
+	 </bean>
+	
+	
+	
+	
+	
+		
+</beans>
