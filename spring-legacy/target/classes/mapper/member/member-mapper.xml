@@ -1,4 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="member">
+	<select id="loginMember" resultType="member">
+		SELECT * 
+		FROM MEMBER
+		WHERE USER_ID = #{userId} 
+		  AND USER_PWD = #{userPwd}
+		  AND STATUS = 'Y'
+	</select>
+
+	<insert id="insertMember">
+		INSERT INTO MEMBER VALUES(
+			SEQ_UNO.NEXTVAL, 
+			#{userId},
+			#{userPwd},
+			#{userName},
+			#{email},
+			#{birthday},
+			#{gender},
+			#{phone},
+			#{address},
+			DEFAULT,
+			DEFAULT,
+			DEFAULT,
+			DEFAULT		
+		)		
+	</insert>
+
+	<select id="idCheck" resultType='int'>
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE USER_ID= #{userId}
+	</select>
+	
+	<select id="selectOne" resultType="member">
+		SELECT
+			USER_ID, USER_NAME
+		FROM MEMBER
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
 </mapper>
