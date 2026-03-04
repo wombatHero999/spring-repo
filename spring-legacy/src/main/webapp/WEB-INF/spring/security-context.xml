@@ -29,6 +29,7 @@
 		<security:intercept-url pattern="/security/insert" access="permitAll" />
 		<security:intercept-url pattern="/member/login" access="permitAll" />
 		<security:intercept-url pattern="/member/idCheck" access="permitAll" />
+		<security:intercept-url pattern="/security/accessDenied" access="permitAll" />
 		
 		<!-- 
 			form-login
@@ -55,8 +56,29 @@
 			logout-success-url="/"
 		/>
 		
+		<!-- 
+			remember-me
+			 - session의 유지시간이 초과되어도 사용자의 인증상태를 유지하게 하는 필터
+			 - 사용자의 인증정보를 브라우저의 쿠키에 저장하여 , 다시 접속시 자동으로 로그
+			 인이 유지되도록 하는 속성
+			 
+			 data-source-ref
+			  - remeber-me토큰을 저장할 db의 빈객체.
+			  - remember-me토큰은 시큐리티에 의해 자동으로 추가/삭제 되므로 개발자가
+			  직접 관리할 필요가 없다.
+			  
+			 token-validity-seconds
+			  - 토큰의 유지시간 : 초단위
+		 -->		
+		<security:remember-me
+			data-source-ref="datasource"
+			token-validity-seconds="1209600"
+		/>
 		
-		
+		<!-- 접근권한 없는 url을 요청시 처리할 핸들러 -->
+		<security:access-denied-handler
+			error-page="/security/accessDenied"
+		/>				
 	</security:http>
 	
 	<!-- 
