@@ -7,5 +7,80 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
+	<!-- 암호화 인코딩 기능을 가진 bean객체 등록 -->
+	<bean id="bcryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+	
+	<!-- 
+		http
+		 - 특정 URL에 대한 보안 규칙을 정의하는 태그
+		 - URL에 접근할 때 사용자가 권한이 없으면 오류 페이지로 리디렉트하거나
+		   로그인 페이지로 이동시키도록 처리할 수 있다.
+		 - URL단위 사용자별 권한부여가 필요할 때 사용한다.  
+	 -->	
+	<!-- 정적파일에 대한 보안검사 제외 옵션 -->
+	<security:http security="none" pattern="/resources/**" />
+	<security:http auto-config="true">
+		<!-- 
+			메인페이지, 회원가입페이지, 로그인페이지, 아이디 중복 체크 기능은
+			모든 사용자가 이용 가능하도록 설정.
+		 -->
+		<security:intercept-url pattern="/" access="permitAll" />
+		<security:intercept-url pattern="/security/insert" access="permitAll" />
+		<security:intercept-url pattern="/member/login" access="permitAll" />
+		<security:intercept-url pattern="/member/idCheck" access="permitAll" />
+		
+		<!-- 
+			form-login
+			 - 폼 기반 로그인 인증 설정을 지정하는 태그. 
+			 - login-page : 로그인 폼 페이지의 경로
+			 - login-processing-url : 로그인 폼 제출시 해당 폼의 정보를 
+			   처리하는 url경로 지정. 
+			   - 인증처리는 Manger가 인증토큰을 생성한 후, Provider를 통해 인증
+			     작업을 수행한다.
+			 - username-parameter / password-parameter
+			   : 제출폼의 id/pw에 해당하는 name값이 username, password가
+			   아닌경우 사용하는 속성
+		 -->
+		<security:form-login
+			login-page="/member/login"
+			login-processing-url="/member/loginProcess"
+			username-parameter="userId"
+			password-parameter="userPwd"
+		/>
+		
+		<security:logout
+			logout-url="/member/logout"
+			invalidate-session="true"
+			logout-success-url="/"
+		/>
+		
+		
+		
+	</security:http>
+	
+	<!-- 
+		Authentication Manager / Provider 등록
+		을 위한 bean객체 등록
+	 -->
+	<context:component-scan base-package="com.kh.spring.security" />
+	<context:component-scan base-package="com.kh.spring.member"></context:component-scan>
+	
+	<!-- 
+		authentication-manager
+		 - 인증 처리를 담당하는 컴포넌트
+		authentication-provider
+		 - authentication-manager에 등록되어 실제 "인증로직"을 수행하는 객체
+		 - 실제 인증로직으로는 UserDetailsService를 구현한 bean객체를 등록해야
+		 한다.
+		 - provider는 인증 성공시 UserDetails를 반환한다.
+	 -->
+	 <security:authentication-manager>
+	 	<security:authentication-provider user-service-ref="securityServiceImpl">
+	 		<security:password-encoder ref="bcryptPasswordEncoder" />
+	 	</security:authentication-provider>
+	 </security:authentication-manager>
+
+
 
 </beans>
