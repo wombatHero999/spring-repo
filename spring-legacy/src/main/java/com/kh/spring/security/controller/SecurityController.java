@@ -1,9 +1,11 @@
 package com.kh.spring.security.controller;
 
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.model.validator.MemberValidator;
 import com.kh.spring.member.model.vo.Member;
+import com.kh.spring.security.model.vo.MemberExt;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,7 +115,28 @@ public class SecurityController {
 		return "redirect:/member/login";
 	}
 	
-	
+	/* 
+	 * Authentication
+	 *  - Principal : 인증에 사용된 사용자 객체
+	 *  - Credentials : 인증에 필요한 비밀번호에 대한 정보를 가진
+	 *  객체 
+	 *  - Authorities : 사용자가 가진 권한을 저장하는 객체
+	 * */
+	@GetMapping("/myPage")
+	public String myPage(
+			Authentication auth , 
+			Principal principal ,
+			Model model
+			) {
+		// 인증된 사용자 정보 가져오는 방법
+		// 1. ArgumentResolver를 이용한 자동바인딩
+		log.debug("auth = {}" , auth);
+		log.debug("principal = {}", principal);
+		
+		model.addAttribute("loginUser", new MemberExt());
+		
+		return "member/myPage";
+	}
 	
 	
 	
