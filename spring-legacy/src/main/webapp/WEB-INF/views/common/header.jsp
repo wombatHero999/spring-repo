@@ -131,8 +131,8 @@ height:80%; position:absolute; margin:auto; top:0px; bottom:0px; right:0px; left
 				<li><a href="${contextPath }">HOME</a></li>
 				<sec:authorize access="hasAnyRole('ROLE_USER','ROLE_ADMIN')">
 					<li><a href="${contextPath }/chat/chatRoomList">채팅</a></li>
-					<c:forEach items='${boardTypeList}' var='boardType'>
-						<li><a href="${contextPath }/board/list/${boardType.boardCd}">${boardType.boardName}</a></li>
+					<c:forEach items='${boardTypeMap}' var='boardType'>
+						<li><a href="${contextPath }/board/list/${boardType.key}">${boardType.value.boardName}</a></li>
 					</c:forEach>				
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_ADMIN')">

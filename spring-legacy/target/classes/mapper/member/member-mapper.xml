@@ -25,6 +25,18 @@
 			DEFAULT,
 			DEFAULT		
 		)		
+		
+		<!-- 
+			selectKey
+			 - INSERT 전/후에 실행되어 게시글 번호와 같은 자동증가값을 가져오기위해
+			 사용하는 태그
+			 - keyProperty : 결과값을 저장할 필드명
+			 - resultType : 반환값의 자료형
+			 - order : insert문 실행 이전/이후 중 선택
+		 -->
+		<selectKey keyProperty="userNo" resultType="int" order="AFTER" >
+			SELECT SEQ_UNO.CURRVAL FROM DUAL
+		</selectKey>
 	</insert>
 
 	<select id="idCheck" resultType='int'>
@@ -40,6 +52,24 @@
 		WHERE USER_ID = #{userId}
 	</select>
 	
+	<update id="updateMember">
+		UPDATE MEMBER
+		SET 
+			EMAIL = #{email} ,
+			<if test="gender != null and gender != ''">
+				GENDER = #{gender} , 
+			</if>
+			PHONE = #{phone} ,
+  		    USER_NAME = #{userName} , 
+  		    ADDRESS = #{address} ,
+  		    BIRTHDAY = #{birthday}, 
+  		    MODIFY_DATE = SYSDATE  		    
+		WHERE USER_ID = #{userId} AND STATUS = 'Y'
+	</update>
+	
+	<insert id="insertAuthority">
+		INSERT INTO AUTHORITIES VALUES (#{userNo}, 'ROLE_USER')
+	</insert>
 	
 	
 	

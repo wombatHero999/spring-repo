@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.spring.member.model.dao.MemberDao;
 import com.kh.spring.member.model.vo.Member;
+import com.kh.spring.security.model.vo.MemberExt;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -19,7 +20,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public int insertMember(Member m) {
-		return memberDao.insertMember(m);
+		// 회원가입과 동시에 권한 추가
+		int result = memberDao.insertMember(m);
+		memberDao.insertAuthority(m);
+		return result;
 	}
 
 	@Override
@@ -30,6 +34,11 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Member selectOne(String userId) {
 		return memberDao.selectOne(userId);
+	}
+
+	@Override
+	public int updateMember(MemberExt loginUser) {
+		return memberDao.updateMember(loginUser);
 	}
 	
 

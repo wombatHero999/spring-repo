@@ -49,6 +49,25 @@
 	</filter-mapping>
 	
 	<!-- 
+		Multipart형식의 데이터를 처리하기 위한 필터
+		 - DispatcherServlet이 Request를 MultipartRequest로 파싱하기
+		 전, Filter단계에서 파싱하도록 하는 필터.
+	 -->
+	<filter>
+		<filter-name>multipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+		
+		<init-param>
+			<param-name>multipartResolverBeanName</param-name>
+			<param-value>multipartResolver</param-value>
+		</init-param>		
+	</filter>
+	<filter-mapping>
+		<filter-name>multipartFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 
 		스프링 시큐리티 필터체인 등록하기
 	 -->
 	<filter>
@@ -61,7 +80,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
+	
 
 
 

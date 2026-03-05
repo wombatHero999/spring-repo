@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -133,11 +135,51 @@ public class SecurityController {
 		log.debug("auth = {}" , auth);
 		log.debug("principal = {}", principal);
 		
-		model.addAttribute("loginUser", new MemberExt());
+		// 2. SecurityContextHolder를 이용
+		Authentication auth2 = SecurityContextHolder
+			.getContext()
+			.getAuthentication();
+		MemberExt loginUser = (MemberExt)auth2.getPrincipal();
+		//MemberExt loginUser = (MemberExt) prin;
+		
+		model.addAttribute("loginUser", loginUser);
 		
 		return "member/myPage";
 	}
 	
+	@PostMapping("/update")
+	public String update(
+			@Validated @ModelAttribute MemberExt loginUser,
+			BindingResult bindResult,
+			Authentication auth , // 로그인한 사용자 인증정보
+			RedirectAttributes ra
+			) {
+		if(bindResult.hasErrors()) {
+			return "redirect:/security/myPage";
+		}
+		
+		// 비지니스 로직
+		// 1. 전달받은 member데이터를 바탕으로 db수정요청
+		int result = mService.updateMember(loginUser);
+		
+		// 2. 내정보 수정이 성공했따면, 변경된 회원정보를 DB에서 다시 조회한 후
+		//    새로운 인증정보를 생성하여 SecurityContext에 저장.
+		if(result > 0) {
+			// (principal, credentials, authorities
+			Authentication newAuth = 
+				new UsernamePasswordAuthenticationToken(
+						loginUser , auth.getCredentials() , 
+						auth.getAuthorities());
+			SecurityContextHolder
+				.getContext()
+				.setAuthentication(newAuth);
+			ra.addFlashAttribute("alertMsg", "내 정보 수정 성공");
+			
+			return "redirect:/security/myPage";
+		}else {
+			throw new RuntimeException("회원정보 수정 오류.");
+		}		
+	}
 	
 	
 	
