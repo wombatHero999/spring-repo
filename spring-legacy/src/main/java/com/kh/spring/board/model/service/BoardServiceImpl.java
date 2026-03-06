@@ -65,13 +65,17 @@ public class BoardServiceImpl implements BoardService{
 		if(!imgList.isEmpty()) {
 			for(BoardImg bi : imgList) {
 				bi.setRefBno(b.getBoardNo());
-				
 				// 행단위 insert 수행
-				result = boardDao.inserBoardImg(bi);
-				
-				if(result == 0) {
-					throw new RuntimeException("첨부파일 등록 실패");
-				}
+//				result = boardDao.inserBoardImg(bi);
+//				
+//				if(result == 0) {
+//					throw new RuntimeException("첨부파일 등록 실패");
+//				}
+			}
+			result = boardDao.insertBoardImgList(imgList); 
+			
+			if(result != imgList.size()) {
+				throw new RuntimeException("첨부파일 등록 에러 발생");
 			}
 		}
 		return result;

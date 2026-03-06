@@ -18,4 +18,6 @@ public interface BoardDao {
 
 	int inserBoardImg(BoardImg bi);
 
+	int insertBoardImgList(List<BoardImg> imgList);
+
 }

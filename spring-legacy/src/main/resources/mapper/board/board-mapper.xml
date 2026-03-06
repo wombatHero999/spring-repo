@@ -88,6 +88,25 @@
 		#{originName}, #{changeName}, #{refBno}, #{imgLevel} )
 	</insert>
 	
+	<!-- 
+		행단위 insert문을 one sql로 수정하기
+		
+		서브쿼리를 활용한 다중 insert문으로 한방에 모든 데이터 추가하기				
+	 -->
+	 <insert id="insertBoardImgList">
+	 	INSERT INTO BOARD_IMG
+	 		(BOARD_IMG_NO, ORIGIN_NAME,CHANGE_NAME, REF_BNO,IMG_LEVEL)
+	 	SELECT SEQ_IMG_NO.NEXTVAL, C.*
+	 	FROM (
+	 		<foreach collection="list" item="bi" separator="UNION ALL">
+	 			SELECT
+	 				#{bi.originName} , #{bi.changeName}
+	 				, #{bi.refBno} , #{bi.imgLevel}
+	 			FROM DUAL
+	 		</foreach>
+	 	) C
+	 </insert>
+	
 		
 		
 		

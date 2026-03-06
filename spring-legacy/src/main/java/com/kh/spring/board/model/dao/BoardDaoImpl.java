@@ -95,6 +95,11 @@ public class BoardDaoImpl implements BoardDao{
 		return session.insert("board.insertBoardImg", bi);
 	}
 
+	@Override
+	public int insertBoardImgList(List<BoardImg> imgList) {
+		return session.insert("board.insertBoardImgList", imgList);
+	}
+
 }
 
 
