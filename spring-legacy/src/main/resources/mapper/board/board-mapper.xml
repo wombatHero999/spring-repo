@@ -8,20 +8,90 @@
 	</select>
 	
 	<select id="selectList" resultType="board">
-		SELECT 
-		    BOARD_NO,
-		    BOARD_TITLE , 
-		    USER_NAME AS BOARD_WRITER , 
-		    COUNT, 
-		    CREATE_DATE
+		SELECT *
+		FROM (
+		    SELECT ROWNUM AS RNUM , T1.* 
+		    FROM (
+		        SELECT 
+		            BOARD_NO,
+		            BOARD_TITLE , 
+		            USER_NAME AS BOARD_WRITER , 
+		            COUNT, 
+		            CREATE_DATE
+		        FROM BOARD B
+		        LEFT JOIN MEMBER M ON BOARD_WRITER = USER_NO
+		        WHERE B.STATUS = 'Y' AND BOARD_CD = #{boardCd}
+		        <if test="keyword != null and keyword != ''">
+		        	AND 
+		        	<choose>
+		        		<when test="condition.equals('title')">
+		        			BOARD_TITLE LIKE '%' || #{keyword} || '%'
+		        		</when>
+		        		<when test="condition.equals('writer')">
+		        			USER_NAME LIKE '%' || #{keyword} || '%'
+		        		</when>
+		        		<when test="condition.equals('content')">
+		        			BOARD_CONTENT LIKE '%' || #{keyword} || '%'
+		        		</when>
+		        		<otherwise>
+		        			(BOARD_TITLE LIKE '%' || #{keyword} || '%'
+		        			OR BOARD_CONTENT LIKE '%' || #{keyword} || '%')
+		        		</otherwise>		        		
+		        	</choose>
+		        </if>		        
+		        ORDER BY BOARD_NO DESC) T1
+		)
+		WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+	
+	<select id="selectListCount" resultType="int">
+		SELECT COUNT(*)
 		FROM BOARD B
 		LEFT JOIN MEMBER M ON BOARD_WRITER = USER_NO
 		WHERE B.STATUS = 'Y' AND BOARD_CD = #{boardCd}
-		ORDER BY BOARD_NO DESC
+		<if test="keyword != null and keyword != ''">
+        	AND 
+        	<choose>
+        		<when test="condition.equals('title')">
+        			BOARD_TITLE LIKE '%' || #{keyword} || '%'
+        		</when>
+        		<when test="condition.equals('writer')">
+        			USER_NAME LIKE '%' || #{keyword} || '%'
+        		</when>
+        		<when test="condition.equals('content')">
+        			BOARD_CONTENT LIKE '%' || #{keyword} || '%'
+        		</when>
+        		<otherwise>
+        			(BOARD_TITLE LIKE '%' || #{keyword} || '%'
+        			OR BOARD_CONTENT LIKE '%' || #{keyword} || '%')
+        		</otherwise>		        		
+        	</choose>
+        </if>	
 	</select>
 	
+	<insert id="insertBoard" >
+		<selectKey keyProperty="boardNo"
+		 resultType="int" 
+		 order="BEFORE">
+			SELECT SEQ_BNO.NEXTVAL FROM DUAL
+		</selectKey>
+			
+		INSERT INTO BOARD
+		VALUES(#{boardNo}
+		, #{boardTitle}, #{boardContent}, #{boardCd}, #{boardWriter},
+		 DEFAULT, DEFAULT, DEFAULT)
+	</insert>
 	
+	<insert id="insertBoardImg">
+		INSERT INTO BOARD_IMG
+		VALUES (SEQ_IMG_NO.NEXTVAL, 
+		#{originName}, #{changeName}, #{refBno}, #{imgLevel} )
+	</insert>
 	
+		
+		
+		
+		
 	
 	
 	
