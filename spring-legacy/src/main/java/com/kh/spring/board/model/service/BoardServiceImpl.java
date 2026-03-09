@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.spring.board.model.dao.BoardDao;
 import com.kh.spring.board.model.vo.Board;
+import com.kh.spring.board.model.vo.BoardExt;
 import com.kh.spring.board.model.vo.BoardImg;
 
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,42 @@ public class BoardServiceImpl implements BoardService{
 				throw new RuntimeException("첨부파일 등록 에러 발생");
 			}
 		}
+		return result;
+	}
+
+	@Override
+	public BoardExt selectBoard(int boardNo) {
+		return boardDao.selectBoard(boardNo);
+	}
+
+	@Override
+	public int increaseCount(int boardNo) {
+		return boardDao.increaseCount(boardNo);
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public int updateBoard(Board board, String deleteList, List<BoardImg> imgList) {
+		int result = boardDao.updateBoard(board);
+		
+		if(result == 0) throw new RuntimeException("게시글 수정실패");
+		
+		if(deleteList != null && !deleteList.equals("")) {
+			result = boardDao.deleteBoardImg(deleteList);
+			if(result == 0) throw new RuntimeException("첨부파일 삭제 에러");			
+		}
+		
+		if(!imgList.isEmpty()) {
+			for(BoardImg bi : imgList) {
+				result = boardDao.insertBoardImg(bi);
+				if(result == 0) {
+					throw new RuntimeException("첨부파일 수정 실패");
+				}
+			}
+		}
+		
+		
+		
 		return result;
 	}
 
