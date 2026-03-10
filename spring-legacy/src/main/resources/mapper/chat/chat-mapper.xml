@@ -21,6 +21,35 @@
 		VALUES(SEQ_CR_NO.NEXTVAL , #{title} , DEFAULT, #{userNo} )
 	</insert>
 	
+	<!-- 채팅방 참여여부 확인 sql -->
+	<select id="joinCheck" resultType="int">
+		SELECT COUNT(*)
+		FROM CHAT_ROOM_JOIN
+		WHERE CHAT_ROOM_NO = #{chatRoomNo}
+		AND USER_NO = #{userNo}
+	</select>
+	
+	<!-- 채티방참여 -->
+	<insert id="joinChatRoom">
+		INSERT INTO CHAT_ROOM_JOIN
+		VALUES (#{userNo}, #{chatRoomNo})
+	</insert>
+	
+	<!-- 채티방 메세지 조회 -->
+	<select id="selectChatMessage" resultType="chatMessage">
+		SELECT
+			MESSAGE,
+			USER_NAME,
+			CREATE_DATE,
+			CM_NO,
+			USER_NO
+		FROM CHAT_MESSAGE
+		LEFT JOIN MEMBER USING(USER_NO)
+		WHERE CHAT_ROOM_NO = #{chatRoomNo}
+		ORDER BY CM_NO
+	</select>
+	
+	
 	
 	
 	
