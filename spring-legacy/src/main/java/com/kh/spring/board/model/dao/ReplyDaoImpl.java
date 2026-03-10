@@ -24,6 +24,11 @@ public class ReplyDaoImpl implements ReplyDao {
 	public List<Reply> selectList(int boardNo) {
 		return session.selectList("board.selectReplyList",boardNo);
 	}
+
+	@Override
+	public int deleteReply(Reply r) {
+		return session.update("board.deleteReply", r);
+	}
 	
 	
 	

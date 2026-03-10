@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,9 +60,23 @@ public class ReplyController {
 		}
 		
 		return ResponseEntity.ok(list); // 200
-		
 	}
 	
+	@PostMapping("/delete/{replyNo}")
+	public ResponseEntity<Void> deleteReply(
+			@PathVariable("replyNo") int replyNo,
+			Authentication auth , 
+			Reply r
+			){
+		int userNo = ((MemberExt) auth.getPrincipal()).getUserNo();
+		r.setReplyWriter(userNo+"");
+		
+		int result = rService.deleteReply(r);
+		if(result == 0) {
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.noContent().build();
+	}
 	
 }
 

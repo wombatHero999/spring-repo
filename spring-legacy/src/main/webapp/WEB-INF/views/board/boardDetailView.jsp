@@ -165,6 +165,24 @@ img {
 			})
 		}
 		
+		function deleteReply(replyNo){
+			if(confirm("정말로 삭제하시겠습니까?")){
+				$.ajax({
+					url : '${contextPath}/reply/delete/'+replyNo,
+					type : 'POST' ,
+					success : function(){
+						alert("삭제 성공");
+						selectReplyList();
+					},
+					error : function(xhr){
+						console.log(xhr);
+						alert("삭제 실패");
+					}					
+				})
+			}
+		}
+		
+		
 		selectReplyList();
 	</script>
 	

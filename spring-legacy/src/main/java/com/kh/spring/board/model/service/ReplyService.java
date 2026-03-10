@@ -10,4 +10,6 @@ public interface ReplyService {
 
 	List<Reply> selectList(int boardNo);
 
+	int deleteReply(Reply r);
+
 }
