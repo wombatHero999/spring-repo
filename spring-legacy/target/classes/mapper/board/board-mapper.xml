@@ -162,6 +162,29 @@
 		WHERE BOARD_IMG_NO IN (${deleteList})
 	</delete>
 	
+	<insert id="insertReply">
+		INSERT INTO REPLY
+		VALUES(
+			SEQ_RNO.NEXTVAL , 
+			#{replyContent},
+			#{refBno} ,
+			#{replyWriter},
+			DEFAULT,
+			DEFAULT
+		)
+	</insert>
+	
+	<select id="selectReplyList" resultType="reply">
+		SELECT
+			*
+		FROM REPLY
+		WHERE REF_BNO = #{boardNo}
+		AND STATUS = 'Y'
+	</select>
+	
+	
+	
+	
 	
 	
 	
