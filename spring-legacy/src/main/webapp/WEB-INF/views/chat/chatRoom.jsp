@@ -122,8 +122,13 @@
 		
 		// 웹소켓 연결 요청
 		var chattingSocket = new SockJS(contextPath+"/chat");
+		
+		// 스톰프 연결설정
+		var stompClient = Stomp.over(new SockJS(contextPath+"/stomp"));
 	</script>
 	<script src="${contextPath}/resources/js/chat.js"></script>	
+	<script src="${contextPath}/resources/js/stomp.js"></script>	
+	
 	
 	
 	<jsp:include page="/WEB-INF/views/common/footer.jsp"></jsp:include>

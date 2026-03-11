@@ -87,12 +87,28 @@
 	</websocket:handlers>	 
 	<!-- 웹소켓 설정 끝 -->
 	
-	
-	
-	
-	
-	
-	
+	<!-- 
+		STOMP
+		 - WebSocket위에서 동작하는 메시징 프로토콜로 웹소켓을 활용한 복잡한
+		 기능을 구현할 때 사용한다.
+		 - 메시지에 "목적지", "구독", "명령", "헤더", "바디" 등을 추가하여
+		 의미있는 통신을 가능하게 한다.
+		 
+		 stomp-endpoint
+		  - stomp서버의 연결경로
+		 
+		 application-destination-prefix
+		  - 클라이언트가 "서버"로 보낼 메세지의 시작 url을 지정하는 속성
+		 
+		 simple-broker
+		  - 클라이언트가 메세지를 받을 구독 경로 
+	 -->
+	<websocket:message-broker application-destination-prefix="/app">
+		<websocket:stomp-endpoint path="/stomp">
+			<websocket:sockjs></websocket:sockjs>
+		</websocket:stomp-endpoint>
+		<websocket:simple-broker prefix="/topic" />
+	</websocket:message-broker>
 	
 	
 </beans:beans>
