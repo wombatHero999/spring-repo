@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -87,14 +88,24 @@ public class ChatWebsocket extends TextWebSocketHandler {
 					s.sendMessage( new TextMessage(json)  );
 				}
 			}
-			
 		}
-		
-		
 	}
 	
-	
-	
+	// 웹소켓 연결 종료 후실행되는 메서드
+	// 클라이언트의 session정보를 메모리상에서 제거할 예정
+	@Override
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+		int chatRoomNo = (int) session.getAttributes().get("chatRoomNo");
+		log.debug("웹소켓 연결 종료");
+		Set<WebSocketSession> roomSet = roomSession.get(chatRoomNo);
+		if(roomSet != null) {
+			roomSet.remove(session);
+			
+			if(roomSet.isEmpty()) {
+				roomSession.remove(chatRoomNo);
+			}
+		}
+	}
 	
 	
 	
