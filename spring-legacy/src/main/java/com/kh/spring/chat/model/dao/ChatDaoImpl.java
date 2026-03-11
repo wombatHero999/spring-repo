@@ -46,6 +46,21 @@ public class ChatDaoImpl implements ChatDao{
 	public int insertMessage(ChatMessage chatMessage) {
 		return session.insert("chat.insertMessage", chatMessage);
 	}
+
+	@Override
+	public int exitChatRoom(ChatMessage message) {
+		return session.delete("chat.exitChatRoom" , message);
+	}
+
+	@Override
+	public int countChatRoomMember(ChatMessage message) {
+		return session.selectOne("chat.countChatRoomMember", message);
+	}
+
+	@Override
+	public int closeChatRoom(ChatMessage message) {
+		return session.update("chat.closeChatRoom", message);
+	}
 }
 
 

@@ -60,6 +60,25 @@
 		)
 	</insert>
 	
+	<delete id="exitChatRoom">
+		DELETE FROM CHAT_ROOM_JOIN
+		WHERE CHAT_ROOM_NO = #{chatRoomNo}
+		AND USER_NO = #{userNo}
+	</delete>
+	
+	<select id="countChatRoomMember" resultType="int">
+		SELECT COUNT(*)
+		FROM CHAT_ROOM_JOIN
+		WHERE CHAT_ROOM_NO = #{chatRoomNo}
+	</select>
+	
+	<update id="closeChatRoom">
+		UPDATE CHAT_ROOM SET
+			STATUS = 'N'
+		WHERE CHAT_ROOM_NO = #{chatRoomNo}
+	</update>
+	
+	
 	
 	
 	

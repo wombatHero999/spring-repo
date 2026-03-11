@@ -41,6 +41,29 @@ public class StompController {
 		// 메세지 브로커에게 메시지 템플릿 전송
 		return message;
 	}
+	
+	@MessageMapping("/chat/exit/{roomNo}")
+	public void handleExit(
+			@DestinationVariable int roomNo,
+			@Payload ChatMessage message
+			) {
+		// 1. 참여자 정보 삭제
+		// 2. 채팅방 참여자 수가 0명이라면, 채티방을삭제
+		service.exitChatRoom(message);
+		
+		// 3. 퇴장메시지 담은 후 전송
+		message.setType(ChatMessage.MessageType.EXIT);
+		message.setMessage(message.getUserName()+"님이 퇴장했습니다.");
+		messagingTemplate.convertAndSend("/topic/room/"+roomNo,message);
+	}
+	
+	@MessageMapping("/notice/send")
+	@SendTo("/topic/notice")
+	public String sendNotice(@Payload String notice) {
+		return notice;
+	}
+	
+	
 }
 
 

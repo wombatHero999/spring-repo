@@ -20,4 +20,10 @@ public interface ChatDao {
 
 	int insertMessage(ChatMessage chatMessage);
 
+	int exitChatRoom(ChatMessage message);
+
+	int countChatRoomMember(ChatMessage message);
+
+	int closeChatRoom(ChatMessage message);
+
 }

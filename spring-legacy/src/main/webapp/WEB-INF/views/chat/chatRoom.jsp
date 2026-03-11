@@ -109,9 +109,7 @@
 			<button id="send">보내기</button>
 		</div>
 	</div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>	
+	
 	
 	<script>
 		/* 채팅설정을 위한 전역변수들 */

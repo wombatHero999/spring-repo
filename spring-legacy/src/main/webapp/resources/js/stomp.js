@@ -39,3 +39,24 @@ function showMessage(message){
 
     document.querySelector(".display-chatting").append(li);
 }
+
+// 나가기 버튼
+const exitBtn = document.querySelector("#exit-btn");
+
+exitBtn.onclick = function(){
+    /*
+        나가기 버튼 클릭시
+        1. 같은 방에 접속중인 사용자에게 퇴장 메세지 전송
+        2. CHAT_ROOM_JOIN테이블에서 한행의 데이터를 삭제
+        3. 현재 채팅방에 참여자가 0명이라면, 채팅방 자체를 삭제
+    */
+    stompClient.send("/app/chat/exit/"+chatRoomNo, {} , JSON.stringify({
+        userName ,
+        chatRoomNo , 
+        userNo 
+    }))
+
+    stompClient.disconnect(function(){
+        location.href = `${contextPath}/chat/chatRoomList`;
+    })
+}
