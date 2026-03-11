@@ -49,7 +49,16 @@
 		ORDER BY CM_NO
 	</select>
 	
-	
+	<insert id="insertMessage">
+		INSERT INTO CHAT_MESSAGE
+		VALUES (
+			SEQ_CM_NO.NEXTVAL, 
+			#{message} ,
+			DEFAULT,
+			#{chatRoomNo},
+			#{userNo}
+		)
+	</insert>
 	
 	
 	

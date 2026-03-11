@@ -41,6 +41,11 @@ public class ChatDaoImpl implements ChatDao{
 	public List<ChatMessage> selectChatMessage(ChatRoomJoin join) {
 		return session.selectList("chat.selectChatMessage", join);
 	}
+
+	@Override
+	public int insertMessage(ChatMessage chatMessage) {
+		return session.insert("chat.insertMessage", chatMessage);
+	}
 }
 
 

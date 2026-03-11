@@ -18,4 +18,6 @@ public interface ChatDao {
 
 	List<ChatMessage> selectChatMessage(ChatRoomJoin join);
 
+	int insertMessage(ChatMessage chatMessage);
+
 }
