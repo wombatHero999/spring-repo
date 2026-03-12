@@ -52,9 +52,35 @@ public class Utils {
 		}
 		return webPath+changeName;
 	}
+	/* 
+	 * XSS(크로스 사이트 스크립트공격)
+	 *  - 스크립트 삽입 공격
+	 *  - 사용자가 script태그를 게시글에 작성하여 클라이언트가 게시글 클릭시 
+	 *  script에 지정한 코드가 실행되도록 유도하는 방식
+	 *  - 위 내용을 그대로 db에 저장 후 브라우저에 렌더링하면 문제가 발생할 수 있으므로
+	 *  태그가 아닌 기본 문자열로 인식할 수 있게끔 html내부 entity로 변환처리를 수행해
+	 *  야한다.
+	 * */
+	public static String XSSHandling(String content) {
+		if(content != null) {
+			content = content.replaceAll("&", "&amp;");
+			content = content.replaceAll("<", "&lt;");
+			content = content.replaceAll(">", "&gt;");
+			content = content.replaceAll("\"", "&quot;");
+		}
+		return content;
+	}
 	
+	// 개행문자 처리
+	// textarea -> \n , p -> <br>
+	public static String newLineHandling(String content) {
+		return content.replaceAll("(\r\n|\r|\n|\n\r)", "<br>");
+	}
 	
-	
+	// 개행해제 처리
+	public static String newLineClear(String content) {
+		return content.replaceAll("<br>","\n");
+	}
 	
 	
 	

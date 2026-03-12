@@ -360,16 +360,16 @@ public class BoardController {
 			throw new RuntimeException("게시글이 존재하지 않습니다");
 		}
 		
-		int boardWriter = Integer.parseInt( board.getBoardWriter());
-		int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
-		if(!(boardWriter == userNo || 
-				auth
-				.getAuthorities()
-				.stream()
-				.anyMatch( authority ->
-				authority.getAuthority().equals("ROLE_ADMIN")))) {
-			throw new RuntimeException("게시글 수정권한이 없습니다.");
-		}
+//		int boardWriter = Integer.parseInt( board.getBoardWriter());
+//		int userNo = ((MemberExt)auth.getPrincipal()).getUserNo();
+//		if(!(boardWriter == userNo || 
+//				auth
+//				.getAuthorities()
+//				.stream()
+//				.anyMatch( authority ->
+//				authority.getAuthority().equals("ROLE_ADMIN")))) {
+//			throw new RuntimeException("게시글 수정권한이 없습니다.");
+//		}
 		model.addAttribute("board",board);
 		
 		return "board/boardUpdateView";		

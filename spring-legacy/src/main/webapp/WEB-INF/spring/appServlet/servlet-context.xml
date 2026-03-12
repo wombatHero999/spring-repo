@@ -5,10 +5,12 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
 		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
@@ -69,7 +71,8 @@
 		 - Websocket/sockjs는 메세지를 실시간으로 송수신 하기 위한 양방향 채널이며
 		 특별한 "기능적인 규약"은 존재하지 않는다.
 	 -->	
-	<beans:bean id="chatHandler" class="com.kh.spring.chat.model.websocket.ChatWebsocket" />
+	<beans:bean id="chatHandler" 
+		class="com.kh.spring.chat.model.websocket.ChatWebsocket" />
 	<websocket:handlers>
 		<!-- 웹소켓 요청을 처리할 수 있는 bean객체 등록 -->
 		<websocket:mapping handler="chatHandler" path="/chat"/>
@@ -109,6 +112,58 @@
 		</websocket:stomp-endpoint>
 		<websocket:simple-broker prefix="/topic" />
 	</websocket:message-broker>
+	
+	<!-- 
+		인터셉터(Interceptor)
+		 - DispatcherServlet에서 Controller로 보내는 요청을 가로채는 
+		 컴포넌트
+		 - 공통관심사(로그인체크,권한,인가체크,로깅체크 등..)등을 분리하여 관리한다
+		 - 스프링의 빈객체로 등록하여 기타 서비스나 dao객체를 의존성 주입을 받을 수 있다.
+	 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/board/update/**"/>
+			<mapping path="/board/delete/**"/>
+			<beans:bean class="com.kh.spring.common.interceptors.BoardOwnerCheckInterceptor" />			
+		</interceptor>
+	</interceptors>
+	
+	<!-- 
+		AOP(Aspect Oriented Programming)
+		 - 관점지향프로그래밍
+		 - 핵심 비지니스 로직과는 별개로 여러 모듈에서 공통적으로 수행되어야 하는 로직들을
+		 특정 관심사로 분리하여 핵심 로직에 영향을 주지 않고 모듈화 시키는 프로그래밍 기법.
+		 - ex) 서비스 메서드 실행 전 후로 로깅처리, 예외처리하는 로직을 추가
+		 
+		 aspectj-autoproxy
+		  - Spring에서 AOP를 활성화 시켜주는 속성으로 @Aspect어노테이션을 통해
+		    AOP클래스를 정의할 수 있게 해준다.
+		  - Proxy객체를 생성하여 "대상 메서드" 실행 전/후에 공통 관심사를 삽입
+		  
+		 proxy-target-class
+		  - 인터페이스를 구현한 클래스들에 대해서만 프록시를 적용하고자 할때 사용하는 속성
+		  - true속성 추가시 : interface를 구현하지 않은 클래스에 대해서도 프록시를 적용
+		  - false속성 추가시 : interface를 구현한 클래스에 대해서만 프록시를 적용
+		 
+		 AOP VS Interceptor의 차이
+		  - Interceptor : DispatcherServlet에서 Controller로 들어오는 요청에서
+		    동작한다.
+		    -> 주로 인증/인가, 로깅, 인코딩처리시 사용
+		  - AOP : service/repository등 비지니스 로직에서 동작(메서드 실행 전/후로)
+		    -> 주로 트랜잭션 처리, 성능 체크, 보안체크 및 공통 소스코드 작성시 사용  
+		 
+		 스프링 요청 / 응답 흐름
+		 클라이언트 요청 -> Filter -> DispatcherServlet -> interceptor
+		 -> controller -> AOP -> SERVICE -> AOP -> DAO -> DB   
+	 -->
+	 <aop:aspectj-autoproxy proxy-target-class="false" />
+	
+	
+	
+	
+	
+	
+	
 	
 	
 </beans:beans>
