@@ -45,7 +45,7 @@ public class ScheduleController {
 	 *     0 30 * * * *
 	 *  */
 	
-	@Scheduled( cron="0/5 * * * * *") // 매분 0초에서 5초간격으로 작업을 수행
+	//@Scheduled( cron="0/5 * * * * *") // 매분 0초에서 5초간격으로 작업을 수행
 	public void testCron() {
 		log.debug("크론 표현식 작업 실행중 {}", System.currentTimeMillis());
 	}

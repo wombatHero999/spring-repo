@@ -6,6 +6,7 @@ import java.util.Map;
 import com.kh.spring.board.model.vo.Board;
 import com.kh.spring.board.model.vo.BoardExt;
 import com.kh.spring.board.model.vo.BoardImg;
+import com.kh.spring.board.model.vo.BoardType;
 
 public interface BoardService {
 
@@ -22,5 +23,9 @@ public interface BoardService {
 	int increaseCount(int boardNo);
 
 	int updateBoard(Board board, String deleteList, List<BoardImg> imgList);
+
+	List<String> selectFileList();
+
+	List<BoardType> selectBoardTypeMap();
 
 }
